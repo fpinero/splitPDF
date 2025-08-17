@@ -5,64 +5,64 @@ from pypdf import PdfReader, PdfWriter
 
 def split_pdf(input_path):
     """
-    Extrae un rango de páginas de un fichero PDF y lo guarda como un nuevo fichero.
+    Extracts a range of pages from a PDF file and saves it as a new file.
     """
-    # 1. Validar que el fichero de entrada existe.
+    # 1. Validate that the input file exists.
     if not os.path.isfile(input_path):
-        print(f"Error: El fichero no existe en la ruta indicada: {input_path}")
+        print(f"Error: The file does not exist at the specified path: {input_path}")
         sys.exit(1)
 
     try:
         reader = PdfReader(input_path)
         total_pages = len(reader.pages)
-        print(f"El PDF original tiene {total_pages} páginas.")
+        print(f"The original PDF has {total_pages} pages.")
 
-        # 2. Pedir al usuario el rango de páginas.
+        # 2. Prompt the user for the page range.
         while True:
             try:
-                start_page = int(input(f"Página inicial (1-{total_pages}): "))
-                end_page = int(input(f"Página final ({start_page}-{total_pages}): "))
+                start_page = int(input(f"Start page (1-{total_pages}): "))
+                end_page = int(input(f"End page ({start_page}-{total_pages}): "))
                 
                 if 1 <= start_page <= end_page <= total_pages:
                     break
                 else:
-                    print("Error: Rango de páginas inválido. Asegúrate de que 1 <= inicio <= fin <= total_páginas.")
+                    print("Error: Invalid page range. Please ensure that 1 <= start <= end <= total_pages.")
             except ValueError:
-                print("Error: Por favor, introduce un número entero válido.")
+                print("Error: Please enter a valid integer.")
 
-        # 3. Construir el nombre del fichero de salida.
+        # 3. Build the output filename.
         directory = os.path.dirname(input_path)
         base_name = os.path.splitext(os.path.basename(input_path))[0]
         output_filename = f"{base_name}_from_{start_page}-{end_page}_pages.pdf"
         output_path = os.path.join(directory, output_filename)
 
-        # 4. Validar que el fichero de salida no exista.
+        # 4. Validate that the output file does not already exist.
         if os.path.exists(output_path):
-            print(f"Error: El fichero de destino ya existe, no se sobreescribirá: {output_path}")
+            print(f"Error: The destination file already exists and will not be overwritten: {output_path}")
             sys.exit(1)
 
-        # 5. Crear el nuevo PDF con las páginas seleccionadas.
+        # 5. Create the new PDF with the selected pages.
         writer = PdfWriter()
-        # Los índices de las páginas en pypdf son base 0, por eso restamos 1.
+        # Page indices in pypdf are 0-based, so we subtract 1.
         for i in range(start_page - 1, end_page):
             writer.add_page(reader.pages[i])
 
-        # 6. Guardar el fichero resultante.
+        # 6. Save the resulting file.
         with open(output_path, "wb") as output_file:
             writer.write(output_file)
 
-        print(f"\n¡Éxito! Se ha creado el fichero:")
+        print(f"\nSuccess! The file has been created:")
         print(output_path)
 
     except Exception as e:
-        print(f"Ha ocurrido un error inesperado: {e}")
+        print(f"An unexpected error occurred: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
-    # El script espera la ruta completa del fichero como primer argumento.
+    # The script expects the full path to the file as the first argument.
     if len(sys.argv) < 2:
-        print("Uso: python split_pdf.py \"/ruta/completa/al/fichero.pdf\"")
-        print("Recuerda usar comillas si la ruta contiene espacios.")
+        print("Usage: python split_pdf.py \"/path/to/your/file.pdf\"")
+        print("Remember to use quotes if the path contains spaces.")
         sys.exit(1)
     
     file_path = sys.argv[1]

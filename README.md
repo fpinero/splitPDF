@@ -66,6 +66,6 @@ Página final (30-250): 45
 Upon success, it will create a new file in the same directory as the original:
 
 ```
-¡Éxito! Se ha creado el fichero:
+Success! The file has been created:
 /Users/fpinero/Documents/My Important Book_from_30-45_pages.pdf
 ```
